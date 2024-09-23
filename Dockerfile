@@ -24,11 +24,11 @@ COPY . /var/www/html
 # Instalar dependencias de Composer
 RUN composer install --no-interaction --prefer-dist --optimize-autoloader
 
-# Instalar dependencias de npm con chequeo de errores
-RUN npm install || { echo "npm install failed"; exit 1; }
+# Instalar dependencias de npm con logs detallados
+RUN npm install --verbose || { echo "npm install failed"; exit 1; }
 
-# Compilar para producción con chequeo de errores
-RUN npm run production || { echo "npm run production failed"; exit 1; }
+# Compilar para producción con logs detallados
+RUN npm run production --verbose || { echo "npm run production failed"; exit 1; }
 
 # Dar permisos a las carpetas necesarias
 RUN chown -R www-data:www-data storage bootstrap/cache
