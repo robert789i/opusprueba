@@ -1,20 +1,11 @@
 FROM php:7.3-apache
 
-# Instalar dependencias de PHP, Node.js, y utilidades para debugging
+# Instalar dependencias de PHP
 RUN apt-get update && apt-get install -y \
     libzip-dev \
     unzip \
     git \
-    curl \
-    build-essential \
     && docker-php-ext-install pdo pdo_mysql zip
-
-# Instalar Node.js y npm desde la fuente oficial
-RUN curl -fsSL https://deb.nodesource.com/setup_14.x | bash - \
-    && apt-get install -y nodejs
-
-# Verificar versiones de node y npm
-RUN node -v && npm -v
 
 # Instalar Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
@@ -27,12 +18,6 @@ COPY . /var/www/html
 
 # Instalar dependencias de Composer
 RUN composer install --no-interaction --prefer-dist --optimize-autoloader
-
-# Instalar dependencias de npm con verbose
-RUN npm install --verbose
-
-# Probar compilación con npm run production y registrar errores
-RUN npm run production --verbose || { echo "npm run production failed"; exit 1; }
 
 # Dar permisos a las carpetas necesarias
 RUN chown -R www-data:www-data storage bootstrap/cache
