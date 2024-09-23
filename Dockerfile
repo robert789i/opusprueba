@@ -1,7 +1,11 @@
+# Utilizar la imagen base de PHP con Apache
 FROM php:8.0-apache
 
 # Instalar extensiones de PHP necesarias
-RUN docker-php-ext-install pdo pdo_mysql
+RUN apt-get update && apt-get install -y \
+    libzip-dev \
+    unzip \
+    && docker-php-ext-install pdo pdo_mysql zip
 
 # Instalar Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
