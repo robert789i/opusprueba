@@ -5,7 +5,7 @@ RUN apt-get update && apt-get install -y \
     libzip-dev \
     unzip \
     git \
-    netcat \  # Instalar netcat para usar con wait-for-it
+    netcat \  # Instalar netcat para wait-for-it
     && docker-php-ext-install pdo pdo_mysql zip
 
 # Instalar Composer
