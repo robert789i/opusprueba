@@ -5,7 +5,6 @@ RUN apt-get update && apt-get install -y \
     libzip-dev \
     unzip \
     git \
-    netcat \  # Instalar netcat para wait-for-it
     && docker-php-ext-install pdo pdo_mysql zip
 
 # Instalar Composer
@@ -26,12 +25,8 @@ RUN chown -R www-data:www-data storage bootstrap/cache
 # Habilitar el módulo de reescritura de Apache
 RUN a2enmod rewrite
 
-# Copiar el script wait-for-it
-COPY scripts/wait-for-it.sh /usr/local/bin/wait-for-it
-RUN chmod +x /usr/local/bin/wait-for-it
-
-# Exponer el puerto 80
+# Exponer el puerto 80 para Apache
 EXPOSE 80
 
-# Iniciar Apache usando wait-for-it para esperar la disponibilidad de MySQL
-CMD ["wait-for-it", "mysql:3306", "--", "apache2-foreground"]
+# Ejecutar Apache en primer plano
+CMD ["apache2-foreground"]
