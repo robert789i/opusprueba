@@ -9,9 +9,6 @@ RUN apt-get update && apt-get install -y \
     build-essential \
     && docker-php-ext-install pdo pdo_mysql zip
 
-# Instalar Node.js y npm desde la fuente oficial (usa Node.js 14 para compatibilidad)
-RUN curl -fsSL https://deb.nodesource.com/setup_14.x | bash - \
-    && apt-get install -y nodejs
 
 # Verificar versiones de node y npm
 RUN node -v && npm -v
