@@ -1,6 +1,6 @@
 FROM php:7.3-apache
 
-# Instalar dependencias del sistema y PHP
+# Instalar dependencias de PHP y Node.js
 RUN apt-get update && apt-get install -y \
     libzip-dev \
     unzip \
@@ -22,17 +22,17 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Configurar el directorio de trabajo
 WORKDIR /var/www/html
 
-# Copiar los archivos de la aplicación al contenedor
+# Copiar los archivos de la aplicación
 COPY . /var/www/html
 
 # Instalar dependencias de Composer
 RUN composer install --no-interaction --prefer-dist --optimize-autoloader
 
-# Instalar dependencias de npm
-RUN npm install
+# Instalar dependencias de npm con registro detallado
+RUN npm install --verbose
 
-# Compilar archivos para producción
-RUN npm run production
+# Compilar para producción con más detalle (utilizando verbose para registrar más información)
+RUN npm run production --verbose || { echo "npm run production failed"; exit 1; }
 
 # Dar permisos a las carpetas necesarias
 RUN chown -R www-data:www-data storage bootstrap/cache
