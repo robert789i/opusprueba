@@ -1,10 +1,10 @@
-# Utilizar la imagen base de PHP con Apache
 FROM php:8.0-apache
 
-# Instalar extensiones de PHP necesarias
+# Instalar dependencias y extensiones necesarias
 RUN apt-get update && apt-get install -y \
     libzip-dev \
     unzip \
+    git \
     && docker-php-ext-install pdo pdo_mysql zip
 
 # Instalar Composer
@@ -19,18 +19,18 @@ COPY . /var/www/html
 # Instalar dependencias de Composer
 RUN composer install --no-interaction --prefer-dist --optimize-autoloader
 
-# Copiar el archivo de entorno y generar la clave de la aplicación
+# Copiar archivo .env y generar clave de aplicación
 COPY .env.example .env
 RUN php artisan key:generate
 
-# Dar permisos a las carpetas de almacenamiento
+# Cambiar permisos
 RUN chown -R www-data:www-data storage bootstrap/cache
 
-# Habilitar el módulo de reescritura de Apache
+# Habilitar módulos de Apache
 RUN a2enmod rewrite
 
 # Exponer el puerto 80
 EXPOSE 80
 
-# Iniciar Apache en primer plano
+# Ejecutar Apache
 CMD ["apache2-foreground"]
