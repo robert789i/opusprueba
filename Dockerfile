@@ -9,7 +9,7 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-install pdo pdo_mysql zip
 
 # Instalar Node.js y npm
-RUN curl -sL https://deb.nodesource.com/setup_14.x | bash - \
+RUN curl -fsSL https://deb.nodesource.com/setup_14.x | bash - \
     && apt-get install -y nodejs
 
 # Instalar Composer
@@ -24,11 +24,11 @@ COPY . /var/www/html
 # Instalar dependencias de Composer
 RUN composer install --no-interaction --prefer-dist --optimize-autoloader
 
-# Instalar dependencias de npm
-RUN npm install
+# Instalar dependencias de npm con chequeo de errores
+RUN npm install || { echo "npm install failed"; exit 1; }
 
-# Compilar para producción (en lugar de npm run dev)
-RUN npm run production
+# Compilar para producción con chequeo de errores
+RUN npm run production || { echo "npm run production failed"; exit 1; }
 
 # Dar permisos a las carpetas necesarias
 RUN chown -R www-data:www-data storage bootstrap/cache
