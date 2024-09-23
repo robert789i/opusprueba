@@ -27,8 +27,8 @@ RUN composer install --no-interaction --prefer-dist --optimize-autoloader
 # Instalar dependencias de npm
 RUN npm install
 
-# Compilar archivos de frontend
-RUN npm run dev
+# Compilar para producción (en lugar de npm run dev)
+RUN npm run production
 
 # Dar permisos a las carpetas necesarias
 RUN chown -R www-data:www-data storage bootstrap/cache
