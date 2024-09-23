@@ -1,6 +1,6 @@
-FROM php:8.0-apache
+FROM php:7.3-apache
 
-# Instalar dependencias y extensiones necesarias
+# Instalar dependencias de PHP
 RUN apt-get update && apt-get install -y \
     libzip-dev \
     unzip \
@@ -19,18 +19,14 @@ COPY . /var/www/html
 # Instalar dependencias de Composer
 RUN composer install --no-interaction --prefer-dist --optimize-autoloader
 
-# Copiar archivo .env y generar clave de aplicación
-COPY .env.example .env
-RUN php artisan key:generate
-
-# Cambiar permisos
+# Dar permisos a las carpetas necesarias
 RUN chown -R www-data:www-data storage bootstrap/cache
 
-# Habilitar módulos de Apache
+# Habilitar el módulo de reescritura de Apache
 RUN a2enmod rewrite
 
 # Exponer el puerto 80
 EXPOSE 80
 
-# Ejecutar Apache
+# Iniciar Apache en primer plano
 CMD ["apache2-foreground"]
